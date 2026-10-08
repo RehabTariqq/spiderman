@@ -1,5 +1,5 @@
 import cv2
-
+import turtle
 
 IMAGE = "spiderman.png"
 
@@ -64,3 +64,27 @@ contours = sorted(
 
 
 print("Useful contours:", len(contours))
+# Create Turtle window
+screen = turtle.Screen()
+
+screen.setup(
+    width=img.shape[1] + 100,
+    height=img.shape[0] + 100
+)
+
+screen.bgcolor("white")
+
+# Disable automatic screen updates
+screen.tracer(0, 0)
+
+
+# Create drawing turtle
+pen = turtle.Turtle()
+
+pen.hideturtle()
+
+pen.speed(0)
+
+pen.pensize(1)
+
+pen.color("black")
