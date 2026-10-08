@@ -31,3 +31,11 @@ gray = cv2.cvtColor(
     img,
     cv2.COLOR_BGR2GRAY
 )
+# Convert grayscale image into
+# black and white
+_, thresh = cv2.threshold(
+    gray,
+    180,
+    255,
+    cv2.THRESH_BINARY_INV
+)
