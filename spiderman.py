@@ -26,3 +26,8 @@ width = int(img.shape[1] * ratio)
 img = cv2.resize(img, (width, height))
 
 print("Image resized to:", width, "x", height)
+# Convert image to grayscale
+gray = cv2.cvtColor(
+    img,
+    cv2.COLOR_BGR2GRAY
+)
