@@ -47,3 +47,20 @@ contours, _ = cv2.findContours(
 )
 
 print("Contours detected:", len(contours))
+# Remove very small contours
+contours = [
+    contour
+    for contour in contours
+    if cv2.contourArea(contour) > 15
+]
+
+
+# Draw larger contours first
+contours = sorted(
+    contours,
+    key=cv2.contourArea,
+    reverse=True
+)
+
+
+print("Useful contours:", len(contours))
