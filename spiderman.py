@@ -1,53 +1,94 @@
 import cv2
 import turtle
 
+
+# ==========================================
+# SETTINGS
+# ==========================================
+
 IMAGE = "spiderman.png"
 
+HEIGHT = 700
+
+UPDATE_EVERY = 3
+
+
+# ==========================================
+# LOAD IMAGE
+# ==========================================
 
 img = cv2.imread(IMAGE)
 
 
 if img is None:
+
+    print("=" * 50)
     print("ERROR: spiderman.png was not found.")
-    print("Make sure the image is in the same folder as spiderman.py")
+    print("=" * 50)
+    print("Make sure spiderman.png is in the")
+    print("same folder as spiderman.py.")
+    print("=" * 50)
+
     exit()
 
 
 print("Spider-Man image loaded successfully!")
-print("Image width:", img.shape[1])
-print("Image height:", img.shape[0])
-# Resize image
-height = 700
 
-ratio = height / img.shape[0]
+
+# ==========================================
+# RESIZE IMAGE
+# ==========================================
+
+ratio = HEIGHT / img.shape[0]
 
 width = int(img.shape[1] * ratio)
 
-img = cv2.resize(img, (width, height))
+img = cv2.resize(
+    img,
+    (width, HEIGHT)
+)
 
-print("Image resized to:", width, "x", height)
-# Convert image to grayscale
+
+# ==========================================
+# GRAYSCALE
+# ==========================================
+
 gray = cv2.cvtColor(
     img,
     cv2.COLOR_BGR2GRAY
 )
-# Convert grayscale image into
-# black and white
+
+
+# ==========================================
+# THRESHOLD
+# ==========================================
+
 _, thresh = cv2.threshold(
     gray,
     180,
     255,
     cv2.THRESH_BINARY_INV
 )
-# Find contours
+
+
+# ==========================================
+# FIND CONTOURS
+# ==========================================
+
 contours, _ = cv2.findContours(
     thresh,
     cv2.RETR_EXTERNAL,
     cv2.CHAIN_APPROX_NONE
 )
 
+
 print("Contours detected:", len(contours))
-# Remove very small contours
+
+
+# ==========================================
+# FILTER CONTOURS
+# ==========================================
+
 contours = [
     contour
     for contour in contours
@@ -55,7 +96,10 @@ contours = [
 ]
 
 
-# Draw larger contours first
+# ==========================================
+# SORT CONTOURS
+# ==========================================
+
 contours = sorted(
     contours,
     key=cv2.contourArea,
@@ -64,7 +108,12 @@ contours = sorted(
 
 
 print("Useful contours:", len(contours))
-# Create Turtle window
+
+
+# ==========================================
+# TURTLE WINDOW
+# ==========================================
+
 screen = turtle.Screen()
 
 screen.setup(
@@ -74,11 +123,13 @@ screen.setup(
 
 screen.bgcolor("white")
 
-# Disable automatic screen updates
 screen.tracer(0, 0)
 
 
-# Create drawing turtle
+# ==========================================
+# TURTLE PEN
+# ==========================================
+
 pen = turtle.Turtle()
 
 pen.hideturtle()
@@ -88,3 +139,58 @@ pen.speed(0)
 pen.pensize(1)
 
 pen.color("black")
+
+
+# ==========================================
+# COORDINATE CONVERSION
+# ==========================================
+
+def map_point(point):
+
+    x, y = point
+
+    x = x - img.shape[1] / 2
+
+    y = img.shape[0] / 2 - y
+
+    return x, y
+
+
+# ==========================================
+# DRAW IMAGE
+# ==========================================
+
+point_counter = 0
+
+
+for contour in contours:
+
+    points = contour.reshape(-1, 2)
+
+    pen.penup()
+
+    for px, py in points:
+
+        x, y = map_point((px, py))
+
+        pen.goto(x, y)
+
+        pen.pendown()
+
+        point_counter += 1
+
+        if point_counter % UPDATE_EVERY == 0:
+            screen.update()
+
+    pen.penup()
+
+
+# ==========================================
+# FINISH
+# ==========================================
+
+screen.update()
+
+print("Drawing completed!")
+
+turtle.done()
