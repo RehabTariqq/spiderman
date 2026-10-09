@@ -6,7 +6,7 @@ import time
 IMAGE = "spiderman.png"
 HEIGHT = 700
 UPDATE_EVERY = 1
-DELAY = 0.03
+DELAY = 0.008
 
 print("Spider-Man Contour Tracer")
 print("Loading image...")
